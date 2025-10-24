@@ -1,16 +1,16 @@
 #!/bin/bash
 
 # Função para substituir os placeholders pelos valores das variáveis de ambiente.
-# Deve ser executada sempre que um contêiner novo é iniciado.
+# Será executada apenas na primeira execução (verifica o arquivo marcador).
 _replaceBackendEnvVars() {
     echo "Buscando arquivos com valores para alterar...."
 
     # Encontra todos os arquivos que contêm os placeholders.
-    FILES=$(grep -rl "postgres_host_a_ser_mudado\|porta_postgres_a_ser_mudada\|usuario_postgres_a_ser_mudado\|senha_postgres_a_ser_mudada\|nome_postgres_a_ser_mudado\|fuso_horario_a_ser_mudado\|jwt_secreto_a_ser_mudado\|jwt_refresh_secreto_a_ser_mudado\|porta_backend_a_ser_mudada\|porta_proxy_a_ser_mudada\|https://api.example.com\|https://app.example.com\|chrome_args_a_ser_mudado\|redis_uri_a_ser_mudado\|redis_limiter_max_a_ser_mudado\|redis_limiter_duracao_a_ser_mudado\|gerencianet_sandbox_a_ser_mudado\|gerencianet_client_id_a_ser_mudado\|gerencianet_client_secret_a_ser_mudado\|gerencianet_pix_cert_a_ser_mudado\|gerencianet_pix_key_a_ser_mudado\|user_limit_a_ser_mudado\|connections_limit_a_ser_mudado\|closed_send_by_me_a_ser_mudado\|company_name_a_ser_mudado\|mail_host_a_ser_mudado\|mail_user_a_ser_mudado\|mail_pass_a_ser_mudado\|mail_from_a_ser_mudado\|mail_port_a_ser_mudado" /usr/src/app)
+    FILES=$(grep -rl "postgres_host_a_ser_mudado\|porta_postgres_a_ser_mudada\|usuario_postgres_a_ser_mudado\|senha_postgres_a_ser_mudada\|nome_postgres_a_ser_mudado\|fuso_horario_a_ser_mudado\|jwt_secreto_a_ser_mudado\|jwt_refresh_secreto_a_ser_mudado\|porta_backend_a_ser_mudada\|porta_proxy_a_ser_mudada\|https://api.example.com\|https://app.example.com\|chrome_args_a_ser_mudado\|redis_uri_a_ser_mudado\|redis_limiter_max_a_ser_mudado\|redis_limiter_duracao_a_ser_mudada\|gerencianet_sandbox_a_ser_mudado\|gerencianet_client_id_a_ser_mudado\|gerencianet_client_secret_a_ser_mudado\|gerencianet_pix_cert_a_ser_mudado\|gerencianet_pix_key_a_ser_mudado\|user_limit_a_ser_mudado\|connections_limit_a_ser_mudado\|closed_send_by_me_a_ser_mudado\|company_name_a_ser_mudado\|mail_host_a_ser_mudado\|mail_user_a_ser_mudado\|mail_pass_a_ser_mudado\|mail_from_a_ser_mudado\|mail_port_a_ser_mudado" /usr/src/app)
 
     if [ -z "$FILES" ]; then
         echo "Nenhum arquivo com placeholders encontrado para substituir."
-        return
+        return 0
     fi
 
     # Escapa caracteres especiais nas variáveis para uso seguro com o 'sed'.
@@ -82,6 +82,8 @@ _replaceBackendEnvVars() {
 
         echo "$FILE modificado com sucesso."
     done
+
+    return 0
 }
 
 # Constrói a string de conexão com o banco de dados.
@@ -113,7 +115,21 @@ _runSeed() {
 }
 
 # --- Ponto de Entrada do Script ---
-# Executa as funções na ordem correta.
-_replaceBackendEnvVars
+MARKER_FILE="/usr/src/app/.env_vars_applied"
+
+if [ -f "$MARKER_FILE" ]; then
+    echo "Variáveis de ambiente já foram aplicadas anteriormente. Pulando substituições."
+else
+    echo "Marca de substituição não encontrada. Executando substituições de placeholders..."
+    if _replaceBackendEnvVars; then
+        echo "Substituições concluídas com sucesso. Criando marcador para evitar nova substituição."
+        date -u +"%Y-%m-%dT%H:%M:%SZ" > "$MARKER_FILE"
+    else
+        echo "Erro ao executar substituições. Abortando."
+        exit 1
+    fi
+fi
+
+# Executa migrações e seed conforme regras originais.
 _runMigrations
 _runSeed
