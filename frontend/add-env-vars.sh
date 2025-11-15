@@ -1,5 +1,6 @@
 #!/bin/sh
 
+# O script agora USA este marcador para rodar apenas uma vez.
 MARKER_FILE="/usr/src/app/.env_vars_applied_frontend"
 
 _replaceFrontendEnvVars() {
@@ -18,8 +19,9 @@ _replaceFrontendEnvVars() {
     FILES=$(grep -rl "hours_ticket_close_auto\|https://api.example.com" /usr/src/app/build || true)
 
     if [ -z "$FILES" ]; then
-        echo "Nenhum arquivo contendo as entradas específicas encontrado."
-        return 1
+        echo "Nenhum arquivo contendo as entradas especificas encontrado."
+        # Isso nao e um erro fatal, permite que o script continue e crie o marcador
+        return 0
     fi
 
     # Escapar caracteres especiais nas variaveis de ambiente (uma vez, fora do loop)
@@ -35,6 +37,23 @@ _replaceFrontendEnvVars() {
 
         echo "$FILE modificado com sucesso."
     done
+
+    # Retorna sucesso
+    return 0
 }
 
-_replaceFrontendEnvVars
+# --- Ponto de Entrada do Script ---
+if [ -f "$MARKER_FILE" ]; then
+    echo "Variaveis de ambiente do frontend ja foram aplicadas. Pulando substituicoes."
+else
+    echo "Marca de substituicao do frontend nao encontrada. Executando..."
+    
+    # Chama a funcao e verifica o status de saida
+    if _replaceFrontendEnvVars; then
+        echo "Substituicoes do frontend concluidas. Criando marcador."
+        date -u +"%Y-%m-%dT%H:%M:%SZ" > "$MARKER_FILE"
+    else
+        echo "Erro ao executar substituicoes do frontend. Abortando."
+        exit 1
+    fi
+fi
