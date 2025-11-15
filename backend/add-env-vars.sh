@@ -78,7 +78,7 @@ _replaceBackendEnvVars() {
         sed -i "s/mail_user_a_ser_mudado/${ESCAPED_MAIL_USER}/g" "$FILE"
         sed -i "s/mail_pass_a_ser_mudado/${ESCAPED_MAIL_PASS}/g" "$FILE"
         sed -i "s/mail_from_a_ser_mudado/${ESCAPED_MAIL_FROM}/g" "$FILE"
-        sed -i "s/mail_port_a_ser_mudada/${ESCAPED_MAIL_PORT}/g" "$FILE" # Note: Original file had a typo here, might want to check the placeholder in your code
+        sed -i "s/mail_port_a_ser_mudado/${ESCAPED_MAIL_PORT}/g" "$FILE"
 
         echo "$FILE modificado com sucesso."
     done
@@ -92,9 +92,9 @@ DB_URI="postgresql://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}"
 # Função para rodar migrações do banco.
 # Executa sempre para garantir que o schema do banco esteja sincronizado com o código.
 _runMigrations() {
-    echo "Executando migrações do banco de dados..."
+    echo "Executando migracoes do banco de dados..."
     npx sequelize db:migrate
-    echo "Migrações finalizadas."
+    echo "Migracoes finalizadas."
 }
 
 # Função para popular o banco de dados com dados iniciais.
@@ -104,7 +104,7 @@ _runSeed() {
     TABLE_EXISTS=$(psql ${DB_URI} -Atc "SELECT to_regclass('public.SeedControl');")
 
     if [ "$TABLE_EXISTS" = "seedcontrol" ]; then
-        echo "Banco de dados já populado (seed). Pulando esta etapa."
+        echo "Banco de dados ja populado (seed). Pulando esta etapa."
     else
         echo "Populando (seeding) o banco de dados pela primeira vez..."
         npx sequelize db:seed:all
@@ -118,14 +118,14 @@ _runSeed() {
 MARKER_FILE="/usr/src/app/.env_vars_applied"
 
 if [ -f "$MARKER_FILE" ]; then
-    echo "Variáveis de ambiente já foram aplicadas anteriormente. Pulando substituições."
+    echo "Variaveis de ambiente ja foram aplicadas anteriormente. Pulando substituicoes."
 else
-    echo "Marca de substituição não encontrada. Executando substituições de placeholders..."
+    echo "Marca de substituicao nao encontrada. Executando substituicoes de placeholders..."
     if _replaceBackendEnvVars; then
-        echo "Substituições concluídas com sucesso. Criando marcador para evitar nova substituição."
+        echo "Substituicoes concluidas com sucesso. Criando marcador para evitar nova substituicao."
         date -u +"%Y-%m-%dT%H:%M:%SZ" > "$MARKER_FILE"
     else
-        echo "Erro ao executar substituições. Abortando."
+        echo "Erro ao executar substituicoes. Abortando."
         exit 1
     fi
 fi
