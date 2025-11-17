@@ -27,7 +27,7 @@ Execute o comando a seguir. Será necessário informar seu usuário e token do G
 git clone https://github.com/launcherbr/whaticketsaas.git whaticket
 ```
 
-Será solicitado o usuário e repositório do github por se tratar de um repositório privado, caso não tenha acesso adquira verificando o readme disponivel em https://github.com/launcherbr/whaticketsaas
+Será solicitado o usuário e token do github por se tratar de um repositório privado, caso não tenha acesso adquira verificando o readme disponivel em https://github.com/launcherbr/whaticketsaas
 
 #### 3\. Acesse a pasta do projeto
 
