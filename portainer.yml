@@ -6,6 +6,7 @@ services:
       - whaticket_redis
     volumes:      
       - whaticket_backend_data:/usr/src/app/
+      - whaticket_backend_public:/usr/src/app/public
     environment:
       # POSTGRES
       - DB_DIALECT=postgres
@@ -130,6 +131,7 @@ networks:
 
 volumes:
   whaticket_backend_data:
+  whaticket_backend_public:
   whaticket_frontend_data:
   postgres-data:
 
