@@ -6,7 +6,7 @@ _replaceBackendEnvVars() {
     echo "Buscando arquivos com valores para alterar...."
 
     # Encontra todos os arquivos que contêm os placeholders.
-    FILES=$(grep -rl "postgres_host_a_ser_mudado\|porta_postgres_a_ser_mudada\|usuario_postgres_a_ser_mudado\|senha_postgres_a_ser_mudada\|nome_postgres_a_ser_mudado\|fuso_horario_a_ser_mudado\|jwt_secreto_a_ser_mudado\|jwt_refresh_secreto_a_ser_mudado\|porta_backend_a_ser_mudada\|porta_proxy_a_ser_mudada\|https://api.example.com\|https://app.example.com\|chrome_args_a_ser_mudado\|redis_uri_a_ser_mudado\|redis_limiter_max_a_ser_mudado\|redis_limiter_duracao_a_ser_mudada\|gerencianet_sandbox_a_ser_mudado\|gerencianet_client_id_a_ser_mudado\|gerencianet_client_secret_a_ser_mudado\|gerencianet_pix_cert_a_ser_mudado\|gerencianet_pix_key_a_ser_mudado\|user_limit_a_ser_mudado\|connections_limit_a_ser_mudado\|closed_send_by_me_a_ser_mudado\|company_name_a_ser_mudado\|mail_host_a_ser_mudado\|mail_user_a_ser_mudado\|mail_pass_a_ser_mudado\|mail_from_a_ser_mudado\|mail_port_a_ser_mudado" /usr/src/app)
+    FILES=$(grep -rl "postgres_host_a_ser_mudado\|porta_postgres_a_ser_mudada\|usuario_postgres_a_ser_mudado\|senha_postgres_a_ser_mudada\|nome_postgres_a_ser_mudado\|fuso_horario_a_ser_mudado\|jwt_secreto_a_ser_mudado\|jwt_refresh_secreto_a_ser_mudado\|porta_backend_a_ser_mudada\|porta_proxy_a_ser_mudada\|https://api.example.com\|https://app.example.com\|chrome_args_a_ser_mudado\|redis_uri_a_ser_mudado\|redis_limiter_max_a_ser_mudado\|redis_limiter_duracao_a_ser_mudado\|gerencianet_sandbox_a_ser_mudado\|gerencianet_client_id_a_ser_mudado\|gerencianet_client_secret_a_ser_mudado\|gerencianet_pix_cert_a_ser_mudado\|gerencianet_pix_key_a_ser_mudado\|user_limit_a_ser_mudado\|connections_limit_a_ser_mudado\|closed_send_by_me_a_ser_mudado\|company_name_a_ser_mudado\|mail_host_a_ser_mudado\|mail_user_a_ser_mudado\|mail_pass_a_ser_mudado\|mail_from_a_ser_mudado\|mail_port_a_ser_mudado" /usr/src/app)
 
     if [ -z "$FILES" ]; then
         echo "Nenhum arquivo com placeholders encontrado para substituir."
@@ -64,7 +64,7 @@ _replaceBackendEnvVars() {
         sed -i "s/chrome_args_a_ser_mudado/${ESCAPED_CHROME_ARGS}/g" "$FILE"
         sed -i "s/redis_uri_a_ser_mudado/${ESCAPED_REDIS_URI}/g" "$FILE"
         sed -i "s/redis_limiter_max_a_ser_mudado/${ESCAPED_REDIS_OPT_LIMITER_MAX}/g" "$FILE"
-        sed -i "s/redis_limiter_duracao_a_ser_mudada/${ESCAPED_REDIS_OPT_LIMITER_DURATION}/g" "$FILE"
+        sed -i "s/redis_limiter_duracao_a_ser_mudado/${ESCAPED_REDIS_OPT_LIMITER_DURATION}/g" "$FILE"
         sed -i "s/gerencianet_sandbox_a_ser_mudado/${ESCAPED_GERENCIANET_SANDBOX}/g" "$FILE"
         sed -i "s/gerencianet_client_id_a_ser_mudado/${ESCAPED_GERENCIANET_CLIENT_ID}/g" "$FILE"
         sed -i "s/gerencianet_client_secret_a_ser_mudado/${ESCAPED_GERENCIANET_CLIENT_SECRET}/g" "$FILE"
