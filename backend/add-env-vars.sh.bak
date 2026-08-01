@@ -5,20 +5,13 @@
 _replaceBackendEnvVars() {
     echo "Buscando arquivos com valores para alterar...."
 
-    # Os placeholders só existem no .env enviado com a imagem. Antes o grep
-    # varria /usr/src/app inteiro (incluindo node_modules, milhares de arquivos),
-    # o que era lento e também batia no próprio add-env-vars.sh (cujo texto
-    # contém esses mesmos placeholders como padrão do sed), fazendo o script
-    # reescrever a si mesmo com os segredos em texto puro. Limitar ao .env
-    # resolve os dois problemas.
-    ENV_FILE="/usr/src/app/.env"
+    # Encontra todos os arquivos que contêm os placeholders.
+    FILES=$(grep -rl "postgres_host_a_ser_mudado\|porta_postgres_a_ser_mudada\|usuario_postgres_a_ser_mudado\|senha_postgres_a_ser_mudada\|nome_postgres_a_ser_mudado\|fuso_horario_a_ser_mudado\|jwt_secreto_a_ser_mudado\|jwt_refresh_secreto_a_ser_mudado\|porta_backend_a_ser_mudada\|porta_proxy_a_ser_mudada\|https://api.example.com\|https://app.example.com\|chrome_args_a_ser_mudado\|redis_uri_a_ser_mudado\|redis_limiter_max_a_ser_mudado\|redis_limiter_duracao_a_ser_mudado\|gerencianet_sandbox_a_ser_mudado\|gerencianet_client_id_a_ser_mudado\|gerencianet_client_secret_a_ser_mudado\|gerencianet_pix_cert_a_ser_mudado\|gerencianet_pix_key_a_ser_mudado\|user_limit_a_ser_mudado\|connections_limit_a_ser_mudado\|closed_send_by_me_a_ser_mudado\|company_name_a_ser_mudado\|mail_host_a_ser_mudado\|mail_user_a_ser_mudado\|mail_pass_a_ser_mudado\|mail_from_a_ser_mudado\|mail_port_a_ser_mudado" /usr/src/app)
 
-    if [ ! -f "$ENV_FILE" ] || ! grep -lq "_a_ser_mudad\|https://api.example.com\|https://app.example.com" "$ENV_FILE"; then
+    if [ -z "$FILES" ]; then
         echo "Nenhum arquivo com placeholders encontrado para substituir."
         return 0
     fi
-
-    FILES="$ENV_FILE"
 
     # Escapa caracteres especiais nas variáveis para uso seguro com o 'sed'.
     ESCAPED_DB_HOST=$(printf '%s\n' "$DB_HOST" | sed 's:[\\/&]:\\&:g')
