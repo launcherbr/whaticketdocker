@@ -4,9 +4,9 @@ services:
     depends_on:
       - postgres_whaticket
       - whaticket_redis
-    volumes:      
-      - whaticket_backend_data:/usr/src/app/
-      - whaticket_backend_public:/usr/src/app/public
+    volumes:
+      - whaticket_backend_uploads:/usr/src/app/public
+      - whaticket_backend_logos:/usr/src/app/public/logotipos
     environment:
       # POSTGRES
       - DB_DIALECT=postgres
@@ -78,9 +78,7 @@ services:
   whaticket_frontend:
     image: whaticket-frontend:latest
     depends_on:
-      - whaticket_backend      
-    volumes:      
-      - whaticket_frontend_data:/usr/src/app/
+      - whaticket_backend
     environment:
       - REACT_APP_BACKEND_URL=https://api.suaempresa.com.br # Informe a URL pública do backend
       - REACT_APP_HOURS_CLOSE_TICKETS_AUTO=24
@@ -130,9 +128,7 @@ networks:
     external: true
 
 volumes:
-  whaticket_backend_data:
-  whaticket_backend_public:
-  whaticket_frontend_data:
+  whaticket_backend_uploads:
+  whaticket_backend_logos:
   postgres-data:
-
   redis-data:

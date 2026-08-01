@@ -4,6 +4,10 @@ services:
       context: ./backend
       dockerfile: ./Dockerfile
     image: whaticket-backend:latest
+    restart: always
+    volumes:
+      - whaticket_backend_uploads:/usr/src/app/public
+      - whaticket_backend_logos:/usr/src/app/public/logotipos
     environment:
       - DB_DIALECT=${DB_DIALECT}
       - DB_HOST=${DB_HOST}
@@ -49,3 +53,6 @@ services:
     environment:
       - BACKEND_URL=${BACKEND_URL}
 
+volumes:
+  whaticket_backend_uploads:
+  whaticket_backend_logos:
